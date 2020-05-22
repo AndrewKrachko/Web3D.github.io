@@ -15,14 +15,23 @@
         div {
             overflow: hidden;
         }
+        
+        .visible {
+            visibility: visible;
+        }
+        
+        .not-visible {
+            visibility: hidden;
+        }
     </style>
 
     <script src="https://preview.babylonjs.com/babylon.js"></script>
-    <script src="https://github.com/BabylonJS/Babylon.js/blob/master/dist/preview%20release/loaders/babylon.stlFileLoader.js"></script>
+    <!-- <script src="https://github.com/BabylonJS/Babylon.js/blob/master/dist/preview%20release/loaders/babylon.stlFileLoader.js"></script> -->
     <script src="https://preview.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
     <script src="https://code.jquery.com/pep/0.4.3/pep.js"></script>
 
     <script src="https://cdn.babylonjs.com/babylon.js"></script>
+    <script src="https://preview.babylonjs.com/gui/babylon.gui.min.js"></script>
     <script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
 </head>
 
@@ -33,24 +42,13 @@
         <li>
             <a href="qwestA_0.html">task 1</a>
         </li>
-        <li>
-            <a href="qwestA_1.html">task 2</a>
-        </li>
-        <li>
-            <a href="qwestA_2.html">task 3</a>
-        </li>
-        <li>
-            <a href="qwestA_3.html">task 4</a>
-        </li>
-        <li>
-            <a href="qwestA_4.html">task 5</a>
-        </li>
     </div>
     <div>
         <div>
             <p>
                 Задание первое в котором вам предстоит что-то сделать
             </p>
+            <img src=".\Teapot\1-1_Teapot.jpg " width="800">
         </div>
         <div>
             <canvas id="renderCanvasA" touch-action="none" width="800" height="550" </canvas>
@@ -69,13 +67,18 @@
                     // Create the scene space
                     var scene = new BABYLON.Scene(engine);
 
+                    var stdMaterial = new BABYLON.StandardMaterial("standardMaterial", sceneA)
+                    stdMaterial.emissiveColor = new BABYLON.Color3.Gray;
+                    var selectedMaterial = new BABYLON.StandardMaterial("selectedMaterial", sceneA)
+                    selectedMaterial.emissiveColor = new BABYLON.Color3.Yellow;
+
                     // Add a camera to the scene and attach it to the canvas
-                    var camera = new BABYLON.ArcRotateCamera("Camera", Math.PI / 2, Math.PI / 2, 2, new BABYLON.Vector3(0, 0, 5), scene);
+                    var camera = new BABYLON.ArcRotateCamera("Camera", Math.PI / 2, Math.PI / 2, 2, new BABYLON.Vector3(0, 10, 60), scene);
                     camera.attachControl(canvas, true);
 
                     // Add lights to the scene
-                    var light1 = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(1, 1, 0), scene);
-                    var light2 = new BABYLON.PointLight("light2", new BABYLON.Vector3(0, 1, -1), scene);
+                    var light1 = new BABYLON.PointLight("Omni", new BABYLON.Vector3(-20, 20, -100), scene);
+                    //var light2 = new BABYLON.PointLight("light2", new BABYLON.Vector3(0, 1, -1), scene);
 
                     // Add and manipulate meshes in the scene
                     var assetsManager = new BABYLON.AssetsManager(scene);
@@ -93,6 +96,21 @@
                             })
 
                             meshArray[entity_number] = task.loadedMeshes[0];
+                            meshArray[entity_number].name = name;
+                            meshArray[entity_number].material = stdMaterial;
+                            meshArray[entity_number].actionManager = new BABYLON.ActionManager(scene);
+
+                            meshArray[entity_number].actionManager
+                                .registerAction(
+                                    new BABYLON.ExecuteCodeAction(
+                                        BABYLON.ActionManager.OnPickTrigger,
+                                        function(item) {
+                                            task.loadedMeshes[0].material = (task.loadedMeshes[0].material == null || task.loadedMeshes[0].material.name == stdMaterial.name) ? selectedMaterial : stdMaterial;
+                                        }
+                                    )
+                                )
+
+
                             console.log(task.loadedMeshes)
 
                             meshArray[entity_number].position = BABYLON.Vector3.Zero();
@@ -110,18 +128,44 @@
 
                     var myMesh = [];
 
-                    LoadEntity("base", "test", "Teapot/", "Base.STL", assetsManager, myMesh, 1);
-                    LoadEntity("base", "test", "Teapot/", "Cap.STL", assetsManager, myMesh, 1);
-                    LoadEntity("base", "test", "Teapot/", "Nozzle.STL", assetsManager, myMesh, 1);
-                    LoadEntity("base", "test", "Teapot/", "Handle.STL", assetsManager, myMesh, 1);
+                    LoadEntity("Base", "test", "Teapot/", "Base.STL", assetsManager, myMesh, 1);
+                    LoadEntity("Cap", "test", "Teapot/", "Cap.STL", assetsManager, myMesh, 1);
+                    LoadEntity("Nozzle", "test", "Teapot/", "Nozzle.STL", assetsManager, myMesh, 1);
+                    LoadEntity("Handle", "test", "Teapot/", "Handle.STL", assetsManager, myMesh, 1);
                     assetsManager.load();
 
+                    var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+                    var button = BABYLON.GUI.Button.CreateSimpleButton("but", "Проверим");
+                    button.width = 0.2;
+                    button.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
+                    button.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
+                    button.height = "40px";
+                    button.color = "white";
+                    button.background = "green";
+
+                    button.onPointerUpObservable.add(() => {
+                        var validSelectedCnt = 4;
+
+                        for (var i = 0; i < scene.meshes.length; i++) {
+                            if (scene.meshes[i].name == "Cap" && scene.meshes[i].material == selectedMaterial || scene.meshes[i].name != "Cap" && scene.meshes[i].material != selectedMaterial) {
+                                validSelectedCnt--;
+                            }
+                        }
+
+                        if (validSelectedCnt == 0) {
+                            item = document.getElementsByName("nextTask");
+                            item[0].classList.remove("not-visible");
+                        }
+                    });
+
+                    advancedTexture.addControl(button);
 
                     return scene;
                 };
                 /******* End of the create scene function ******/
 
                 var sceneA = createScene(engineA, canvasA); //Call the createScene function
+
 
                 // Register a render loop to repeatedly render the scene
                 engineA.runRenderLoop(function() {
@@ -134,6 +178,9 @@
                 });
             </script>
             </canvas>
+        </div>
+        <div name="nextTask" class="not-visible">
+            <a href="qwestA_1.html">task 2</a>
         </div>
     </div>
 </body>
