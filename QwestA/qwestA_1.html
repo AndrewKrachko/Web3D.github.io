@@ -74,7 +74,7 @@
 
                     // Add a camera to the scene and attach it to the canvas
                     var camera = new BABYLON.ArcRotateCamera("Camera", Math.PI / 2, Math.PI / 2, 2, new BABYLON.Vector3(0, 10, 60), scene);
-                    camera.attachControl(canvas, true);
+                    camera.attachControl(canvas, false);
 
                     // Add lights to the scene
                     var light1 = new BABYLON.PointLight("Omni", new BABYLON.Vector3(-20, 20, -100), scene);
@@ -123,15 +123,25 @@
                                     meshArray[entity_number].position.copyFrom(props.position);
                                 }
                             }
+
+
                         }
                     }
 
                     var myMesh = [];
 
-                    LoadEntity("Base", "test", "Teapot/", "Base.STL", assetsManager, myMesh, 1);
-                    LoadEntity("Cap", "test", "Teapot/", "Cap.STL", assetsManager, myMesh, 1);
-                    LoadEntity("Nozzle", "test", "Teapot/", "Nozzle.STL", assetsManager, myMesh, 1);
-                    LoadEntity("Handle", "test", "Teapot/", "Handle.STL", assetsManager, myMesh, 1);
+                    LoadEntity("EverythingElse", "test", "Ship/", "EverythingElse0.STL", assetsManager, myMesh, 1);
+                    LoadEntity("EverythingElse", "test", "Ship/", "EverythingElse1.STL", assetsManager, myMesh, 1);
+                    LoadEntity("EverythingElse", "test", "Ship/", "EverythingElse2.STL", assetsManager, myMesh, 1);
+                    LoadEntity("EverythingElse", "test", "Ship/", "EverythingElse3.STL", assetsManager, myMesh, 1);
+                    LoadEntity("EverythingElse", "test", "Ship/", "EverythingElse4.STL", assetsManager, myMesh, 1);
+                    LoadEntity("EverythingElse", "test", "Ship/", "EverythingElse5.STL", assetsManager, myMesh, 1);
+                    LoadEntity("EverythingElse", "test", "Ship/", "EverythingElse6.STL", assetsManager, myMesh, 1);
+                    LoadEntity("Tube2", "test", "Ship/", "Tube2.STL", assetsManager, myMesh, 1);
+                    LoadEntity("Tube", "test", "Ship/", "Tube.STL", assetsManager, myMesh, 1);
+                    LoadEntity("Housing", "test", "Ship/", "Housing.STL", assetsManager, myMesh, 1);
+                    LoadEntity("Flor", "test", "Ship/", "Flor.STL", assetsManager, myMesh, 1);
+                    LoadEntity("Hull", "test", "Ship/", "Hull.STL", assetsManager, myMesh, 1);
                     assetsManager.load();
 
                     var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
@@ -179,6 +189,16 @@
                 window.addEventListener("resize", function() {
                     engineA.resize();
                 });
+
+                canvasA.onmouseenter = function() {
+                    // add listener to disable scroll
+                    window.addEventListener('scroll', noScroll);
+                };
+
+                canvasA.onmouseleave = function() {
+                    // Remove listener to re-enable scroll
+                    window.removeEventListener('scroll', noScroll);
+                };
             </script>
             </canvas>
         </div>
