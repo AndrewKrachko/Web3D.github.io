@@ -50,6 +50,11 @@
             </p>
             <img src=".\Teapot\1-1_Teapot.jpg " width="800">
         </div>
+        <div name="nextTask" class="not-visible">
+            <p>Молодец! А теперь (если странички не открылись):</p>
+            <li><b><a href="qwestA_1.html">Перейти к заданию 2</a></b></li>
+            <li><a href="guideA_0.html" target="_blank">Еще раз посмотреть кусочек инструкции</a></li>
+        </div>
         <div>
             <canvas id="renderCanvasA" touch-action="none" width="800" height="550" </canvas>
             <!-- touch-action="none" for best results from PEP -->
@@ -77,8 +82,12 @@
                     camera.attachControl(canvas, false);
 
                     // Add lights to the scene
-                    var light1 = new BABYLON.PointLight("Omni", new BABYLON.Vector3(-20, 20, -100), scene);
-                    //var light2 = new BABYLON.PointLight("light2", new BABYLON.Vector3(0, 1, -1), scene);
+                    var light1 = new BABYLON.PointLight("Omni", new BABYLON.Vector3(-200, 200, -1000), scene);
+                    light1.diffuse = new BABYLON.Color3(0.1, 0.1, 0.1);
+                    light1.specular = new BABYLON.Color3(0.1, 0.1, 0.1);
+                    var light2 = new BABYLON.PointLight("Omni", new BABYLON.Vector3(200, 200, 1000), scene);
+                    light2.diffuse = new BABYLON.Color3(0.1, 0.1, 0.1);
+                    light2.specular = new BABYLON.Color3(0.1, 0.1, 0.1);
 
                     // Add and manipulate meshes in the scene
                     var assetsManager = new BABYLON.AssetsManager(scene);
@@ -156,6 +165,8 @@
                             item = document.getElementsByName("nextTask");
                             item[0].classList.remove("not-visible");
                             alert("Молодец! Все правильно!");
+                            window.scrollTo(0, document.body.scrollHeight);
+                            window.open("guideA_1.html", );
                         } else {
                             alert("Чет как-то не очень, давай думай!");
                         }
@@ -181,11 +192,6 @@
                 });
             </script>
             </canvas>
-        </div>
-        <div name="nextTask" class="not-visible">
-            <p>Молодец! А теперь (странички не открылись):</p>
-            <li><b><a href="qwestA_1.html">Перейти к заданию 2</a></b></li>
-            <li><a href="guideA_0.html">Еще раз посмотреть кусочек инструкции</a></li>
         </div>
     </div>
 </body>
