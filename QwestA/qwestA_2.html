@@ -110,8 +110,6 @@
                     // Add and manipulate meshes in the scene
                     var assetsManager = new BABYLON.AssetsManager(scene);
 
-
-
                     assetsManager.onFinish = function(tasks) {
                         start();
                     };
@@ -174,13 +172,7 @@
                     assetsManager.load();
 
                     var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
-                    var button = BABYLON.GUI.Button.CreateSimpleButton("but", "Проверим");
-                    button.width = 0.2;
-                    button.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
-                    button.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
-                    button.height = "40px";
-                    button.color = "white";
-                    button.background = "green";
+                    var button = getButton("but", "Проверим", BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT, BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM);
 
                     // Keyboard events
                     button.onPointerUpObservable.add(() => {
@@ -204,6 +196,179 @@
                     });
 
                     advancedTexture.addControl(button);
+
+                    var buttonAddChassisA = getButton("but", "Добавить раму А", BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT, BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP);
+
+                    buttonAddChassisA.onPointerUpObservable.add(() => {
+                        var newAssetsManager = new BABYLON.AssetsManager(scene);
+
+                        newAssetsManager.onFinish = function(tasks) {
+                            start();
+                        };
+
+                        LoadEntity("Chassis_modA", "test", "Tracktor/", "Chassis_modA.STL", newAssetsManager, myMesh, 1, true);
+
+                        newAssetsManager.load();
+                    });
+
+                    advancedTexture.addControl(buttonAddChassisA);
+
+                    var buttonAddChassisB = getButton("but", "Добавить раму Б", BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT, BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP, 0, 40);
+
+                    buttonAddChassisB.onPointerUpObservable.add(() => {
+                        var newAssetsManager = new BABYLON.AssetsManager(scene);
+
+                        newAssetsManager.onFinish = function(tasks) {
+                            start();
+                        };
+
+                        LoadEntity("Chassis_modB", "test", "Tracktor/", "Chassis_modB.STL", newAssetsManager, myMesh, 1, true);
+
+                        newAssetsManager.load();
+                    });
+
+                    advancedTexture.addControl(buttonAddChassisB);
+
+                    var buttonAddExhaust = getButton("but", "Добавить выхлопную трубу", BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT, BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP, 0, 80);
+
+                    buttonAddExhaust.onPointerUpObservable.add(() => {
+                        var newAssetsManager = new BABYLON.AssetsManager(scene);
+
+                        newAssetsManager.onFinish = function(tasks) {
+                            start();
+                        };
+
+                        LoadEntity("Exhaust", "test", "Tracktor/", "Exhaust.STL", newAssetsManager, myMesh, 1, true);
+
+                        newAssetsManager.load();
+                    });
+
+                    advancedTexture.addControl(buttonAddExhaust);
+
+                    var buttonAddFrontWheel = getButton("but", "Добавить маленькие колеса", BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT, BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP, 0, 120);
+
+                    buttonAddFrontWheel.onPointerUpObservable.add(() => {
+                        var newAssetsManager = new BABYLON.AssetsManager(scene);
+
+                        newAssetsManager.onFinish = function(tasks) {
+                            start();
+                        };
+
+                        LoadEntity("FrontWheel", "test", "Tracktor/", "FrontWheel.STL", newAssetsManager, myMesh, 1, true);
+
+                        newAssetsManager.load();
+                    });
+
+                    advancedTexture.addControl(buttonAddFrontWheel);
+
+                    var buttonAddHelicopterBlades = getButton("but", "Добавить пропеллер", BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT, BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP, 0, 160);
+
+                    buttonAddHelicopterBlades.onPointerUpObservable.add(() => {
+                        var newAssetsManager = new BABYLON.AssetsManager(scene);
+
+                        newAssetsManager.onFinish = function(tasks) {
+                            start();
+                        };
+
+                        LoadEntity("HelicopterBlades", "test", "Tracktor/", "HelicopterBlades.STL", newAssetsManager, myMesh, 1, true);
+
+                        newAssetsManager.load();
+                    });
+
+                    advancedTexture.addControl(buttonAddHelicopterBlades);
+
+                    var buttonAddRearWheel = getButton("but", "Добавить большие колеса", BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT, BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP, 0, 200);
+
+                    buttonAddRearWheel.onPointerUpObservable.add(() => {
+                        var newAssetsManager = new BABYLON.AssetsManager(scene);
+
+                        newAssetsManager.onFinish = function(tasks) {
+                            start();
+                        };
+
+                        LoadEntity("RearWheel", "test", "Tracktor/", "RearWheel.STL", newAssetsManager, myMesh, 1, true);
+
+                        newAssetsManager.load();
+                    });
+
+                    advancedTexture.addControl(buttonAddRearWheel);
+
+                    var buttonAddStearingWheel = getButton("but", "Добавить руль", BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT, BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP, 0, 240);
+
+                    buttonAddStearingWheel.onPointerUpObservable.add(() => {
+                        var newAssetsManager = new BABYLON.AssetsManager(scene);
+
+                        newAssetsManager.onFinish = function(tasks) {
+                            start();
+                        };
+
+                        LoadEntity("StearingWheel", "test", "Tracktor/", "StearingWheel.STL", newAssetsManager, myMesh, 1, true);
+
+                        newAssetsManager.load();
+                    });
+
+                    advancedTexture.addControl(buttonAddStearingWheel);
+
+                    var buttonAddEngine = getButton("but", "Добавить двигатель", BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT, BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP, 0, 280);
+
+                    buttonAddEngine.onPointerUpObservable.add(() => {
+                        var newAssetsManager = new BABYLON.AssetsManager(scene);
+
+                        newAssetsManager.onFinish = function(tasks) {
+                            start();
+                        };
+
+                        LoadEntity("Engine", "test", "Tracktor/", "Engine.STL", newAssetsManager, myMesh, 1, true);
+
+                        newAssetsManager.load();
+                    });
+
+                    advancedTexture.addControl(buttonAddEngine);
+
+                    var buttonAddSeat = getButton("but", "Добавить сидение", BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT, BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP, 0, 320);
+
+                    buttonAddSeat.onPointerUpObservable.add(() => {
+                        var newAssetsManager = new BABYLON.AssetsManager(scene);
+
+                        newAssetsManager.onFinish = function(tasks) {
+                            start();
+                        };
+
+                        LoadEntity("Seat", "test", "Tracktor/", "Seat.STL", newAssetsManager, myMesh, 1, true);
+
+                        newAssetsManager.load();
+                    });
+
+                    advancedTexture.addControl(buttonAddSeat);
+
+                    var buttonAddRoof = getButton("but", "Добавить крышу", BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT, BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP, 0, 360);
+
+                    buttonAddRoof.onPointerUpObservable.add(() => {
+                        var newAssetsManager = new BABYLON.AssetsManager(scene);
+
+                        newAssetsManager.onFinish = function(tasks) {
+                            start();
+                        };
+
+                        LoadEntity("Roof", "test", "Tracktor/", "Roof.STL", newAssetsManager, myMesh, 1, true);
+
+                        newAssetsManager.load();
+                    });
+
+                    advancedTexture.addControl(buttonAddRoof);
+
+                    var buttonKickSelected = getButton("but", "Удалить", BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT, BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM);
+
+                    buttonKickSelected.onPointerUpObservable.add(() => {
+                        for (var i = 0; i < scene.meshes.length; i++) {
+                            if (scene.meshes[i].material == selectedMaterial) {
+                                scene.meshes[i].dispose();
+                                break;
+                            }
+                        }
+                    });
+
+                    advancedTexture.addControl(buttonKickSelected);
 
                     scene.onDataLoadedObservable.add(() => {
                         var sceneItems = [];
@@ -238,6 +403,21 @@
 
                 function getRandom(precision, max, min = 0) {
                     return ((Math.floor((Math.random() * (max - min)) * Math.pow(10, precision))) / Math.pow(10, precision) + min);
+                }
+
+                function getButton(name, text, hAlign, vAlign, xShift = 0, yShift = 0) {
+                    var button = BABYLON.GUI.Button.CreateSimpleButton(name, text);
+                    button.width = 0.2;
+                    button.horizontalAlignment = hAlign;
+                    button.verticalAlignment = vAlign;
+                    button.height = "40px";
+                    button.color = "white";
+                    button.background = "green";
+                    button.position = "absolute";
+                    button.left = xShift + "px";
+                    button.top = yShift + "px";
+
+                    return button;
                 }
             </script>
             </canvas>
