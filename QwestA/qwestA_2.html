@@ -76,10 +76,10 @@
                     stdMaterial.emissiveColor = new BABYLON.Color3.Gray;
                     var selectedMaterial = new BABYLON.StandardMaterial("selectedMaterial", sceneA)
                     selectedMaterial.emissiveColor = new BABYLON.Color3.Yellow;
-                    var semiTransparentMaterial = new BABYLON.StandardMaterial("standardMaterial", sceneA)
+                    var semiTransparentMaterial = new BABYLON.StandardMaterial("semiTransparentMaterial", sceneA)
                     semiTransparentMaterial.emissiveColor = new BABYLON.Color3.Yellow;
-                    semiTransparentMaterial.alpha = 0.2;
-                    var superCloseMaterial = new BABYLON.StandardMaterial("superCloseMaterial", scene)
+                    semiTransparentMaterial.alpha = 0.01;
+                    var superCloseMaterial = new BABYLON.StandardMaterial("superCloseMaterial", sceneA)
                     superCloseMaterial.emissiveColor = new BABYLON.Color3(0.0, 0.7, 0.5);
 
                     // Add a camera to the scene and attach it to the canvas
@@ -96,14 +96,24 @@
                     light2.diffuse = new BABYLON.Color3(0.1, 0.1, 0.1);
                     light2.specular = new BABYLON.Color3(0.1, 0.1, 0.1);
 
+                    // Create the gizmo and attach to the sphere
+                    var gizmo = new BABYLON.GizmoManager(scene);
+                    gizmo.positionGizmoEnabled = true;
+
+                    // Keep the gizmo fixed to world rotation
+                    gizmo.updateGizmoRotationToMatchAttachedMesh = false;
+                    gizmo.updateGizmoPositionToMatchAttachedMesh = true;
+
                     // Add and manipulate meshes in the scene
                     var assetsManager = new BABYLON.AssetsManager(scene);
+
+
 
                     assetsManager.onFinish = function(tasks) {
                         start();
                     };
 
-                    var LoadEntity = function(name, meshNameToLoad, url, file, manager, meshArray, entity_number, props, defaultMaterial = stdMaterial, highlaightable = true) {
+                    var LoadBaseEntity = function(name, meshNameToLoad, url, file, manager, meshArray, entity_number, props) {
                         var meshTask = manager.addMeshTask(name, '', url, file);
 
                         meshTask.onSuccess = function(task) {
@@ -113,20 +123,7 @@
 
                             meshArray[entity_number] = task.loadedMeshes[0];
                             meshArray[entity_number].name = name;
-                            meshArray[entity_number].material = defaultMaterial;
-                            meshArray[entity_number].actionManager = new BABYLON.ActionManager(scene);
-
-                            if (highlaightable) {
-                                meshArray[entity_number].actionManager
-                                    .registerAction(
-                                        new BABYLON.ExecuteCodeAction(
-                                            BABYLON.ActionManager.OnPickTrigger,
-                                            function(item) {
-                                                task.loadedMeshes[0].material = (task.loadedMeshes[0].material == null || task.loadedMeshes[0].material == defaultMaterial) ? selectedMaterial : defaultMaterial;
-                                            }
-                                        )
-                                    )
-                            }
+                            meshArray[entity_number].material = semiTransparentMaterial;
 
                             console.log(task.loadedMeshes)
 
@@ -145,20 +142,68 @@
                         }
                     }
 
+                    var LoadEntity = function(name, meshNameToLoad, url, file, manager, meshArray, entity_number, props) {
+                        var meshTask = manager.addMeshTask(name, '', url, file);
+
+                        meshTask.onSuccess = function(task) {
+                            console.log({
+                                task
+                            })
+
+                            meshArray[entity_number] = task.loadedMeshes[0];
+                            meshArray[entity_number].name = name;
+                            meshArray[entity_number].material = stdMaterial;
+                            meshArray[entity_number].actionManager = new BABYLON.ActionManager(scene);
+
+                            meshArray[entity_number].actionManager
+                                .registerAction(
+                                    new BABYLON.ExecuteCodeAction(
+                                        BABYLON.ActionManager.OnPickTrigger,
+                                        function(item) {
+                                            for (var i = 0; i < scene.meshes.length; i++) {
+                                                if (!scene.meshes[i].name.startsWith("Base")) {
+                                                    scene.meshes[i].material = stdMaterial;
+                                                }
+                                            }
+
+                                            task.loadedMeshes[0].material = selectedMaterial;
+                                        }
+                                    )
+                                )
+
+                            console.log(task.loadedMeshes)
+
+                            meshArray[entity_number].position = BABYLON.Vector3.Zero();
+
+                            if (props) {
+                                if (props.scaling) {
+                                    meshArray[entity_number].scaling.copyFrom(props.scaling);
+                                }
+                                if (props.position) {
+                                    meshArray[entity_number].position.copyFrom(props.position);
+                                }
+                            }
+                        }
+                    }
+
                     var myMesh = [];
 
-                    LoadEntity("EverythingElse", "test", "Ship/", "EverythingElse0.STL", assetsManager, myMesh, 1);
-                    LoadEntity("EverythingElse", "test", "Ship/", "EverythingElse1.STL", assetsManager, myMesh, 1);
-                    LoadEntity("EverythingElse", "test", "Ship/", "EverythingElse2.STL", assetsManager, myMesh, 1);
-                    LoadEntity("EverythingElse", "test", "Ship/", "EverythingElse3.STL", assetsManager, myMesh, 1);
-                    LoadEntity("EverythingElse", "test", "Ship/", "EverythingElse4.STL", assetsManager, myMesh, 1);
-                    LoadEntity("EverythingElse", "test", "Ship/", "EverythingElse5.STL", assetsManager, myMesh, 1);
-                    LoadEntity("EverythingElse", "test", "Ship/", "EverythingElse6.STL", assetsManager, myMesh, 1);
-                    LoadEntity("Tube2", "test", "Ship/", "Tube2.STL", assetsManager, myMesh, 1);
-                    LoadEntity("Tube", "test", "Ship/", "Tube.STL", assetsManager, myMesh, 1);
-                    LoadEntity("Housing", "test", "Ship/", "Housing.STL", assetsManager, myMesh, 1);
-                    LoadEntity("Flor", "test", "Ship/", "Flor.STL", assetsManager, myMesh, 1);
-                    LoadEntity("Hull", "test", "Ship/", "Hull.STL", assetsManager, myMesh, 1);
+                    LoadBaseEntity("BaseChassis_modA", "test", "Tracktor/", "Chassis_modA.STL", assetsManager, myMesh, 1);
+                    LoadBaseEntity("BaseExhaust", "test", "Tracktor/", "Exhaust.STL", assetsManager, myMesh, 1);
+                    LoadBaseEntity("BaseFrontWheel", "test", "Tracktor/", "FrontWheel.STL", assetsManager, myMesh, 1);
+                    LoadBaseEntity("BaseRearWheel", "test", "Tracktor/", "RearWheel.STL", assetsManager, myMesh, 1);
+                    LoadBaseEntity("BaseStearingWheel", "test", "Tracktor/", "StearingWheel.STL", assetsManager, myMesh, 1);
+                    LoadBaseEntity("BaseEngine", "test", "Tracktor/", "Engine.STL", assetsManager, myMesh, 1);
+                    LoadBaseEntity("BaseSeat", "test", "Tracktor/", "Seat.STL", assetsManager, myMesh, 1);
+
+                    LoadEntity("Chassis_modA", "test", "Tracktor/", "Chassis_modA.STL", assetsManager, myMesh, 1);
+                    LoadEntity("Exhaust", "test", "Tracktor/", "Exhaust.STL", assetsManager, myMesh, 1);
+                    LoadEntity("FrontWheel", "test", "Tracktor/", "FrontWheel.STL", assetsManager, myMesh, 1);
+                    LoadEntity("RearWheel", "test", "Tracktor/", "RearWheel.STL", assetsManager, myMesh, 1);
+                    LoadEntity("StearingWheel", "test", "Tracktor/", "StearingWheel.STL", assetsManager, myMesh, 1);
+                    LoadEntity("Engine", "test", "Tracktor/", "Engine.STL", assetsManager, myMesh, 1);
+                    LoadEntity("Seat", "test", "Tracktor/", "Seat.STL", assetsManager, myMesh, 1);
+
                     assetsManager.load();
 
                     var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
@@ -192,6 +237,20 @@
                     });
 
                     advancedTexture.addControl(button);
+
+                    scene.onDataLoadedObservable.add(() => {
+                        var sceneItems = [];
+
+                        for (var i = 0; i < scene.meshes.length; i++) {
+                            if (!scene.meshes[i].name.startsWith("Base")) {
+                                sceneItems.push(scene.meshes[i]);
+                            } else {
+                                scene.meshes[i].isPickable = false;
+                            }
+                        }
+
+                        gizmo.attachableMeshes = sceneItems;
+                    })
 
                     return scene;
                 };
