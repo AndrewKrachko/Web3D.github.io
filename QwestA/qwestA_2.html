@@ -130,11 +130,10 @@
                                             BABYLON.ActionManager.OnPickTrigger,
                                             function(item) {
                                                 for (var i = 0; i < scene.meshes.length; i++) {
-                                                    if (!scene.meshes[i].name.startsWith("Base")) {
+                                                    if (!scene.meshes[i].name.startsWith("Base") && scene.meshes[i].name != "") {
                                                         scene.meshes[i].material = defMaterial;
                                                     }
                                                 }
-
                                                 task.loadedMeshes[0].material = selectedMaterial;
                                             }
                                         )
@@ -142,9 +141,9 @@
                             }
 
                             if (ranPos) {
-                                meshArray[entity_number].position.x = getRandom(1, 50, -50);
-                                meshArray[entity_number].position.y = getRandom(1, 50, -50);
-                                meshArray[entity_number].position.z = getRandom(1, 50, -50);
+                                meshArray[entity_number].position.x = getRandom(1, 25, -25);
+                                meshArray[entity_number].position.y = getRandom(1, 25, -25);
+                                meshArray[entity_number].position.z = getRandom(1, 25, -25);
                             } else {
                                 meshArray[entity_number].position = BABYLON.Vector3.Zero();
                             }
@@ -161,14 +160,6 @@
                     LoadEntity("BaseEngine", "test", "Tracktor/", "Engine.STL", assetsManager, myMesh, 1, false, semiTransparentMaterial, false);
                     LoadEntity("BaseSeat", "test", "Tracktor/", "Seat.STL", assetsManager, myMesh, 1, false, semiTransparentMaterial, false);
 
-                    // LoadEntity("Chassis_modA", "test", "Tracktor/", "Chassis_modA.STL", assetsManager, myMesh, 1, true);
-                    // LoadEntity("Exhaust", "test", "Tracktor/", "Exhaust.STL", assetsManager, myMesh, 1, true);
-                    // LoadEntity("FrontWheel", "test", "Tracktor/", "FrontWheel.STL", assetsManager, myMesh, 1, true);
-                    // LoadEntity("RearWheel", "test", "Tracktor/", "RearWheel.STL", assetsManager, myMesh, 1, true);
-                    // LoadEntity("StearingWheel", "test", "Tracktor/", "StearingWheel.STL", assetsManager, myMesh, 1, true);
-                    // LoadEntity("Engine", "test", "Tracktor/", "Engine.STL", assetsManager, myMesh, 1, true);
-                    // LoadEntity("Seat", "test", "Tracktor/", "Seat.STL", assetsManager, myMesh, 1, true);
-
                     assetsManager.load();
 
                     var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
@@ -176,23 +167,53 @@
 
                     // Keyboard events
                     button.onPointerUpObservable.add(() => {
-                        var validSelectedCnt = 12;
+                        var validSelectedCnt = 14;
 
                         for (var i = 0; i < scene.meshes.length; i++) {
-                            if (scene.meshes[i].name == "EverythingElse" && scene.meshes[i].material == selectedMaterial || scene.meshes[i].name != "EverythingElse" && scene.meshes[i].material != selectedMaterial) {
+                            if (scene.meshes[i].name.startsWith("Base")) {
+
+                                for (var n = 0; n < scene.meshes.length; n++) {
+                                    if (n != i && scene.meshes[n].name != "" && scene.meshes[i].name.includes(scene.meshes[n].name) && BABYLON.Vector3.Distance(scene.meshes[i].position, scene.meshes[n].position) < 5) {
+                                        scene.meshes[i].name = "";
+                                        scene.meshes[n].name = "";
+                                        scene.meshes[n].isPickable = false;
+                                        scene.meshes[n].material = superCloseMaterial;
+                                        scene.meshes[n].position = scene.meshes[i].position;
+                                        gizmo.attachToMesh(null);
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+
+                        for (var i = 0; i < scene.meshes.length; i++) {
+                            if (scene.meshes[i].name == "") {
                                 validSelectedCnt--;
                             }
                         }
 
-                        if (validSelectedCnt == 0) {
+                        if (validSelectedCnt == 0 && scene.meshes.length == 14) {
                             item = document.getElementsByName("nextTask");
                             item[0].classList.remove("not-visible");
                             alert("Молодец! Все правильно!");
-                            window.open("guideA_1.html", );
+                            window.open("guideA_2.html", );
                             window.scrollTo(0, document.body.scrollHeight);
                         } else {
                             alert("Чет как-то не очень, давай думай!");
                         }
+
+                        // var sceneItems = [];
+
+                        // for (var i = 0; i < scene.meshes.length; i++) {
+                        //     if (!scene.meshes[i].name.startsWith("Base") && scene.meshes[i].name != "") {
+                        //         sceneItems.push(scene.meshes[i]);
+                        //     } else {
+                        //         scene.meshes[i].isPickable = false;
+                        //     }
+                        // }
+
+                        // gizmo.attachableMeshes = sceneItems;
+
                     });
 
                     advancedTexture.addControl(button);
@@ -374,7 +395,7 @@
                         var sceneItems = [];
 
                         for (var i = 0; i < scene.meshes.length; i++) {
-                            if (!scene.meshes[i].name.startsWith("Base")) {
+                            if (!scene.meshes[i].name.startsWith("Base") && scene.meshes[i].name != "") {
                                 sceneItems.push(scene.meshes[i]);
                             } else {
                                 scene.meshes[i].isPickable = false;
