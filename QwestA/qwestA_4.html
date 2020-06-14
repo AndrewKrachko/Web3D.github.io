@@ -1,0 +1,343 @@
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Babylon Template</title>
+
+    <style>
+        html,
+        body {
+            overflow: auto;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        
+        div {
+            overflow: hidden;
+        }
+        
+        .visible {
+            visibility: visible;
+        }
+        
+        .not-visible {
+            visibility: hidden;
+        }
+    </style>
+
+    <script src="https://preview.babylonjs.com/babylon.js"></script>
+    <!-- <script src="https://github.com/BabylonJS/Babylon.js/blob/master/dist/preview%20release/loaders/babylon.stlFileLoader.js"></script> -->
+    <script src="https://preview.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
+    <script src="https://code.jquery.com/pep/0.4.3/pep.js"></script>
+
+    <script src="https://cdn.babylonjs.com/babylon.js"></script>
+    <script src="https://preview.babylonjs.com/gui/babylon.gui.min.js"></script>
+    <script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
+</head>
+
+<body>
+    <h1>Квеста А</h1>
+    <div>
+        Все задания квеста:
+        <li>
+            <a href="qwestA_0.html">task 1</a>
+        </li>
+        <li>
+            <a href="qwestA_1.html">task 1</a>
+        </li>
+    </div>
+    <div>
+        <div>
+            <br> Укажите лишние элементы, которых нет на проекциях парахода.</br>
+            Для перемещения камеры используйте стрелки. Вращайте камеру при помощи зажимания левой клавиши мыши и перемещения мыши.
+            </p>
+            <img src=".\Tracktor\1-3_Tracktor.jpg " width="400">
+        </div>
+        <div name="nextTask" class="not-visible">
+            <p>Молодец! А теперь (если странички не открылись):</p>
+            <li><b><a href="qwestA_3.html">Перейти к заданию 3</a></b></li>
+            <li><a href="guideA_2.html" target="_blank">Еще раз посмотреть кусочек инструкции</a></li>
+        </div>
+        <div>
+            <canvas id="renderCanvasA" touch-action="none" width="800" height="550" </canvas>
+            <!-- touch-action="none" for best results from PEP -->
+
+            <!--            <script src="Babylon.js"></script>
+            <script src="babylon.stlFileLoader.js"></script>-->
+
+            <script>
+                var canvasA = document.getElementById("renderCanvasA"); // Get the canvas element
+                var engineA = new BABYLON.Engine(canvasA, true); // Generate the BABYLON 3D engine
+
+                /******* Add the create scene function ******/
+                var createScene = function(engine, canvas) {
+
+                    // Create the scene space
+                    var scene = new BABYLON.Scene(engine);
+
+                    var stdMaterial = new BABYLON.StandardMaterial("standardMaterial", sceneA)
+                    stdMaterial.emissiveColor = new BABYLON.Color3.Gray;
+                    var selectedMaterial = new BABYLON.StandardMaterial("selectedMaterial", sceneA)
+                    selectedMaterial.emissiveColor = new BABYLON.Color3.Yellow;
+                    var semiTransparentMaterial = new BABYLON.StandardMaterial("semiTransparentMaterial", sceneA)
+                    semiTransparentMaterial.emissiveColor = new BABYLON.Color3.Yellow;
+                    semiTransparentMaterial.alpha = 0.05;
+                    var superCloseMaterial = new BABYLON.StandardMaterial("superCloseMaterial", sceneA)
+                    superCloseMaterial.emissiveColor = new BABYLON.Color3(0.0, 0.7, 0.5);
+
+                    var invisMaterial = new BABYLON.StandardMaterial("invisMaterial", sceneA)
+                    invisMaterial.emissiveColor = new BABYLON.Color3.Yellow;
+                    invisMaterial.alpha = 0.005;
+
+                    // Add a camera to the scene and attach it to the canvas
+                    var camera = new BABYLON.ArcRotateCamera("Camera", Math.PI / 2, Math.PI / 2, 2, new BABYLON.Vector3(0, 10, 60), scene);
+                    camera.setTarget(new BABYLON.Vector3(0, 5, 0));
+                    camera.attachControl(canvas, false);
+                    scene.activeCamera.panningSensibility = 0;
+
+                    // Add lights to the scene
+                    var light1 = new BABYLON.PointLight("Omni", new BABYLON.Vector3(-200, 200, -1000), scene);
+                    light1.diffuse = new BABYLON.Color3(0.1, 0.1, 0.1);
+                    light1.specular = new BABYLON.Color3(0.1, 0.1, 0.1);
+                    var light2 = new BABYLON.PointLight("Omni", new BABYLON.Vector3(200, 200, 1000), scene);
+                    light2.diffuse = new BABYLON.Color3(0.1, 0.1, 0.1);
+                    light2.specular = new BABYLON.Color3(0.1, 0.1, 0.1);
+
+                    // Create the gizmo and attach to the sphere
+                    var gizmo = new BABYLON.GizmoManager(scene);
+                    gizmo.positionGizmoEnabled = true;
+
+                    // Keep the gizmo fixed to world rotation
+                    gizmo.updateGizmoRotationToMatchAttachedMesh = false;
+                    gizmo.updateGizmoPositionToMatchAttachedMesh = true;
+
+                    // Add and manipulate meshes in the scene
+                    var assetsManager = new BABYLON.AssetsManager(scene);
+
+                    assetsManager.onFinish = function(tasks) {
+                        start();
+                    };
+
+                    var LoadEntity = function(name, meshNameToLoad, url, file, manager, meshArray, entity_number, ranPos = false, defMaterial = stdMaterial, selectable = true) {
+                        var meshTask = manager.addMeshTask(name, '', url, file);
+
+                        meshTask.onSuccess = function(task) {
+                            meshArray[entity_number] = task.loadedMeshes[0];
+                            meshArray[entity_number].name = name;
+                            meshArray[entity_number].material = defMaterial;
+                            meshArray[entity_number].actionManager = new BABYLON.ActionManager(scene);
+
+                            if (selectable) {
+                                meshArray[entity_number].actionManager
+                                    .registerAction(
+                                        new BABYLON.ExecuteCodeAction(
+                                            BABYLON.ActionManager.OnPickTrigger,
+                                            function(item) {
+                                                for (var i = 0; i < scene.meshes.length; i++) {
+                                                    if (!scene.meshes[i].name.startsWith("Base") && scene.meshes[i].name != "") {
+                                                        scene.meshes[i].material = defMaterial;
+                                                    }
+                                                }
+                                                task.loadedMeshes[0].material = selectedMaterial;
+                                            }
+                                        )
+                                    )
+                            }
+
+                            if (ranPos) {
+                                meshArray[entity_number].position.x = getRandom(1, 25, -25);
+                                meshArray[entity_number].position.y = getRandom(1, 25, -25);
+                                meshArray[entity_number].position.z = getRandom(1, 25, -25);
+                            } else {
+                                meshArray[entity_number].position = BABYLON.Vector3.Zero();
+                            }
+                        }
+                    }
+
+                    var myMesh = [];
+
+                    LoadEntity("Stand", "test", "Vase/", "Stand.STL", assetsManager, myMesh, 1, false, stdMaterial, false);
+                    LoadEntity("BaseVaseLowerCone", "test", "Vase/", "VaseLowerCone.STL", assetsManager, myMesh, 1, false, invisMaterial, false);
+                    LoadEntity("BaseVaseNeck", "test", "Vase/", "VaseNeck.STL", assetsManager, myMesh, 1, false, invisMaterial, false);
+                    LoadEntity("BaseVaseSphere", "test", "Vase/", "VaseSphere.STL", assetsManager, myMesh, 1, false, invisMaterial, false);
+                    LoadEntity("BaseVaseUpperCone", "test", "Vase/", "VaseUpperCone.STL", assetsManager, myMesh, 1, false, invisMaterial, false);
+
+                    // var basisItems = BasisItems(scene);
+
+                    assetsManager.load();
+
+                    var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+                    var button = getButton("but", "Проверим", BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT, BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM);
+
+                    // Keyboard events
+                    button.onPointerUpObservable.add(() => {
+                        var validSelectedCnt = 9;
+
+                        for (var i = 0; i < scene.meshes.length; i++) {
+                            if (scene.meshes[i].name.startsWith("Base")) {
+
+                                for (var n = 0; n < scene.meshes.length; n++) {
+                                    if (n != i && scene.meshes[n].name != "" && scene.meshes[i].name.includes(scene.meshes[n].name) && BABYLON.Vector3.Distance(scene.meshes[i].position, scene.meshes[n].position) < 5) {
+                                        scene.meshes[i].name = "";
+                                        scene.meshes[n].name = "";
+                                        scene.meshes[n].isPickable = false;
+                                        scene.meshes[n].material = superCloseMaterial;
+                                        scene.meshes[n].position = scene.meshes[i].position;
+                                        gizmo.attachToMesh(null);
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+
+                        for (var i = 0; i < scene.meshes.length; i++) {
+                            if (scene.meshes[i].name == "") {
+                                validSelectedCnt--;
+                            }
+                        }
+                        validSelectedCnt--;
+
+                        if (validSelectedCnt == 0 && scene.meshes.length == 9) {
+                            item = document.getElementsByName("nextTask");
+                            item[0].classList.remove("not-visible");
+                            alert("Молодец! Все правильно!");
+                            window.open("guideA_2.html", );
+                            window.scrollTo(0, document.body.scrollHeight);
+                        } else {
+                            alert("Чет как-то не очень, давай думай!");
+                        }
+                    });
+
+                    advancedTexture.addControl(button);
+
+                    var buttonAddChassisA = getButton("but", "Добавить цилиндр", BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT, BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP);
+
+                    buttonAddChassisA.onPointerUpObservable.add(() => {
+                        var newAssetsManager = new BABYLON.AssetsManager(scene);
+
+                        newAssetsManager.onFinish = function(tasks) {
+                            start();
+                        };
+
+                        LoadEntity("VaseNeck", "test", "Vase/", "VaseNeck.STL", newAssetsManager, myMesh, 1, true);
+
+                        newAssetsManager.load();
+                    });
+
+                    advancedTexture.addControl(buttonAddChassisA);
+
+                    var buttonAddChassisB = getButton("but", "Добавить сферу", BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT, BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP, 0, 40);
+
+                    buttonAddChassisB.onPointerUpObservable.add(() => {
+                        var newAssetsManager = new BABYLON.AssetsManager(scene);
+
+                        newAssetsManager.onFinish = function(tasks) {
+                            start();
+                        };
+
+                        LoadEntity("VaseSphere", "test", "Vase/", "VaseSphere.STL", newAssetsManager, myMesh, 1, true);
+
+                        newAssetsManager.load();
+                    });
+
+                    advancedTexture.addControl(buttonAddChassisB);
+
+                    var buttonAddExhaust = getButton("but", "Добавить верхний конус", BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT, BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP, 0, 80);
+
+                    buttonAddExhaust.onPointerUpObservable.add(() => {
+                        var newAssetsManager = new BABYLON.AssetsManager(scene);
+
+                        newAssetsManager.onFinish = function(tasks) {
+                            start();
+                        };
+
+                        LoadEntity("VaseUpperCone", "test", "Vase/", "VaseUpperCone.STL", newAssetsManager, myMesh, 1, true);
+
+                        newAssetsManager.load();
+                    });
+
+                    advancedTexture.addControl(buttonAddExhaust);
+
+                    var buttonAddFrontWheel = getButton("but", "Добавить нижний конус", BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT, BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP, 0, 120);
+
+                    buttonAddFrontWheel.onPointerUpObservable.add(() => {
+                        var newAssetsManager = new BABYLON.AssetsManager(scene);
+
+                        newAssetsManager.onFinish = function(tasks) {
+                            start();
+                        };
+
+                        LoadEntity("VaseLowerCone", "test", "Vase/", "VaseLowerCone.STL", newAssetsManager, myMesh, 1, true);
+
+                        newAssetsManager.load();
+                    });
+
+                    advancedTexture.addControl(buttonAddFrontWheel);
+
+                    var buttonKickSelected = getButton("but", "Удалить", BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT, BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM);
+
+                    buttonKickSelected.onPointerUpObservable.add(() => {
+                        for (var i = 0; i < scene.meshes.length; i++) {
+                            if (scene.meshes[i].material == selectedMaterial) {
+                                scene.meshes[i].dispose();
+                                break;
+                            }
+                        }
+                    });
+
+                    advancedTexture.addControl(buttonKickSelected);
+
+                    scene.onDataLoadedObservable.add(() => {
+                        var sceneItems = [];
+
+                        for (var i = 0; i < scene.meshes.length; i++) {
+                            if (!scene.meshes[i].name.startsWith("Base") && scene.meshes[i].name != "Stand") {
+                                sceneItems.push(scene.meshes[i]);
+                            } else {
+                                scene.meshes[i].isPickable = false;
+                            }
+                        }
+
+                        gizmo.attachableMeshes = sceneItems;
+                    })
+
+                    return scene;
+                };
+
+                var sceneA = createScene(engineA, canvasA); //Call the createScene function
+
+                // Register a render loop to repeatedly render the scene
+                engineA.runRenderLoop(function() {
+                    sceneA.render();
+                });
+
+                // Watch for browser/canvas resize events
+                window.addEventListener("resize", function() {
+                    engineA.resize();
+                });
+
+                function getRandom(precision, max, min = 0) {
+                    return ((Math.floor((Math.random() * (max - min)) * Math.pow(10, precision))) / Math.pow(10, precision) + min);
+                }
+
+                function getButton(name, text, hAlign, vAlign, xShift = 0, yShift = 0) {
+                    var button = BABYLON.GUI.Button.CreateSimpleButton(name, text);
+                    button.width = 0.2;
+                    button.horizontalAlignment = hAlign;
+                    button.verticalAlignment = vAlign;
+                    button.height = "40px";
+                    button.color = "white";
+                    button.background = "green";
+                    button.position = "absolute";
+                    button.left = xShift + "px";
+                    button.top = yShift + "px";
+
+                    return button;
+                }
+            </script>
+            </canvas>
+        </div>
+    </div>
+</body>
+
+</html>
