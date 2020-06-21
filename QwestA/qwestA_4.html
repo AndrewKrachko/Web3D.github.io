@@ -55,8 +55,17 @@
     </div>
     <div>
         <div>
-            <br> Добавляй геометрические примитивы и собери вазу.</br>
-            Для перемещения камеры используйте стрелки. Вращайте камеру при помощи зажимания левой клавиши мыши и перемещения мыши.
+            <p>
+                Вам представлены схема 3D-модели вазы.
+            </p>
+            <p>
+                В правой части экрана имеются кнопки для добавления и удаления объектов, которые необходимы для моделирования трактора (некоторые объекты являются лишними).
+            </p>
+            <p>
+                Управление добавленными объектами осуществляется всплывающими стрелками относительно определенной плоскости.
+            </p>
+            <p>
+                Задание считается выполненным при правильном добавлении и размещении всех объектов. Нажмите кнопку “Проверим” для проверки правильности результатов.
             </p>
             <img src=".\Vase\91a2bfa8188c0a5326ab1cc0449131bf.jpg " width="400">
         </div>
@@ -249,7 +258,23 @@
 
                     advancedTexture.addControl(buttonAddChassisB);
 
-                    var buttonAddExhaust = getButton("but", "Добавить верхний конус", BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT, BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP, 0, 80);
+                    var buttonAddQube = getButton("but", "Добавить прямоугольник", BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT, BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP, 0, 80);
+
+                    buttonAddQube.onPointerUpObservable.add(() => {
+                        var newAssetsManager = new BABYLON.AssetsManager(scene);
+
+                        newAssetsManager.onFinish = function(tasks) {
+                            start();
+                        };
+
+                        LoadEntity("00", "test", "Vase/", "00.STL", newAssetsManager, myMesh, 1, true);
+
+                        newAssetsManager.load();
+                    });
+
+                    advancedTexture.addControl(buttonAddQube);
+
+                    var buttonAddExhaust = getButton("but", "Добавить верхний конус", BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT, BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP, 0, 120);
 
                     buttonAddExhaust.onPointerUpObservable.add(() => {
                         var newAssetsManager = new BABYLON.AssetsManager(scene);
@@ -265,7 +290,7 @@
 
                     advancedTexture.addControl(buttonAddExhaust);
 
-                    var buttonAddFrontWheel = getButton("but", "Добавить нижний конус", BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT, BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP, 0, 120);
+                    var buttonAddFrontWheel = getButton("but", "Добавить нижний конус", BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT, BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP, 0, 160);
 
                     buttonAddFrontWheel.onPointerUpObservable.add(() => {
                         var newAssetsManager = new BABYLON.AssetsManager(scene);
