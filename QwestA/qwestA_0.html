@@ -52,9 +52,9 @@
             <img src=".\Teapot\1-1_Teapot.jpg " width="800">
         </div>
         <div name="nextTask" class="not-visible">
-            <p>Молодец! А теперь (если странички не открылись):</p>
+            <p>Молодец! Если не произошло автоматического перехода на одну из страниц, клинки левой клавишей мыши по необходимой записи.</p>
             <li><b><a href="qwestA_1.html">Перейти к заданию 2</a></b></li>
-            <li><a href="guideA_0.html" target="_blank">Еще раз посмотреть кусочек инструкции</a></li>
+            <li><a href="guideA_0.html" target="_blank">Еще раз просмотреть фрагмент инструкции итогового проекта в программе SketchUp</a></li>
         </div>
         <div>
             <canvas id="renderCanvasA" touch-action="none" width="800" height="550" </canvas>
@@ -167,11 +167,11 @@
                         if (validSelectedCnt == 0) {
                             item = document.getElementsByName("nextTask");
                             item[0].classList.remove("not-visible");
-                            alert("Молодец! Все правильно!", "ей!");
+                            alert("Молодец! Данное задание выполнено правильно. Нажми кнопку “ОК” для перехода на новую страницу с фрагментом инструкции для выполнения итогового проекта в программе SketchUp. После выполнения данного фрагмента инструкции вернись на вкладку с заданиями квеста для прохождения следующих заданий.");
                             window.scrollTo(0, document.body.scrollHeight);
                             window.open("guideA_0.html", );
                         } else {
-                            alert("Чет как-то не очень, давай думай!");
+                            alert("Результат выполнения данного задания не верный! Попробуй еще раз.");
                         }
                     });
 

@@ -61,9 +61,9 @@
             <img src=".\Vase\91a2bfa8188c0a5326ab1cc0449131bf.jpg " width="400">
         </div>
         <div name="nextTask" class="not-visible">
-            <p>Молодец! Ты выполнил все задания:</p>
+            <p>Молодец! Ты выполнил все задания.</p>
             <li>Выполненный итоговый проект вам необходимо сбросить на почту <a href="mailto:tatyana.tsvilik@mail.ru">tatyana.tsvilik@mail.ru</a>.</li>
-            <li><a href="guideA_2.html" target="_blank">Еще раз посмотреть кусочек инструкции</a></li>
+            <li><a href="guideA_2.html" target="_blank">Еще раз просмотреть фрагмент инструкции итогового проекта в программе SketchUp</a></li>
         </div>
         <div>
             <canvas id="renderCanvasA" touch-action="none" width="800" height="550" </canvas>
@@ -207,11 +207,11 @@
                         if (validSelectedCnt == 0 && scene.meshes.length == 9) {
                             item = document.getElementsByName("nextTask");
                             item[0].classList.remove("not-visible");
-                            alert("Молодец! Все правильно!");
+                            alert("Молодец! Данное задание выполнено правильно. Нажми кнопку “ОК” для перехода на новую страницу с фрагментом инструкции для выполнения итогового проекта в программе SketchUp. После выполнения данного фрагмента инструкции вернись на вкладку с заданиями квеста для прохождения следующих заданий.");
                             window.open("guideA_2.html", );
                             window.scrollTo(0, document.body.scrollHeight);
                         } else {
-                            alert("Чет как-то не очень, давай думай!");
+                            alert("Результат выполнения данного задания не верный! Попробуй еще раз.");
                         }
                     });
 
