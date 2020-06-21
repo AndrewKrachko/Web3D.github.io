@@ -1,6 +1,6 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Babylon Template</title>
+    <title>3D-моделирование – легко и просто: задание 5</title>
 
     <style>
         html,
@@ -37,7 +37,7 @@
 </head>
 
 <body>
-    <h1>Квеста А</h1>
+    <h1>3D-моделирование – легко и просто: задание 5</h1>
     <div>
         Все задания квеста:
         <li>
@@ -62,7 +62,7 @@
         </div>
         <div name="nextTask" class="not-visible">
             <p>Молодец! Ты выполнил все задания:</p>
-            <li>Выполненный итоговый проект вам необходимо сбросить на почту mailto:tatyana.tsvilik@mail.ru.</li>
+            <li>Выполненный итоговый проект вам необходимо сбросить на почту <a href="mailto:tatyana.tsvilik@mail.ru">tatyana.tsvilik@mail.ru</a>.</li>
             <li><a href="guideA_2.html" target="_blank">Еще раз посмотреть кусочек инструкции</a></li>
         </div>
         <div>
@@ -98,7 +98,7 @@
 
                     // Add a camera to the scene and attach it to the canvas
                     var camera = new BABYLON.ArcRotateCamera("Camera", Math.PI / 2, Math.PI / 2, 2, new BABYLON.Vector3(0, 10, 60), scene);
-                    camera.setTarget(new BABYLON.Vector3(0, 5, 0));
+                    camera.setTarget(new BABYLON.Vector3(0, 15, 0));
                     camera.attachControl(canvas, false);
                     scene.activeCamera.panningSensibility = 0;
 

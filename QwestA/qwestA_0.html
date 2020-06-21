@@ -1,6 +1,6 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Babylon Template</title>
+    <title>3D-моделирование – легко и просто: задание 1</title>
 
     <style>
         html,
@@ -37,11 +37,17 @@
 </head>
 
 <body>
-    <h1>Квеста А</h1>
+    <h1>3D-моделирование – легко и просто: задание 1</h1>
     <div>
         <div>
             <p>
-                Задание первое в котором вам предстоит что-то сделать
+                Вам представлены 3D-модель чайника и 2D-проекция вида сбоку данной модели.
+            </p>
+            <p>
+                На 3D-модели укажите лишний объект, которого нет на 2D-проекции выполнив щелчок левой клавиши мыши по данному объекту.
+            </p>
+            <p>
+                Далее нажмите кнопку “Проверим” для проверки правильности результатов.
             </p>
             <img src=".\Teapot\1-1_Teapot.jpg " width="800">
         </div>
@@ -161,7 +167,7 @@
                         if (validSelectedCnt == 0) {
                             item = document.getElementsByName("nextTask");
                             item[0].classList.remove("not-visible");
-                            alert("Молодец! Все правильно!");
+                            alert("Молодец! Все правильно!", "ей!");
                             window.scrollTo(0, document.body.scrollHeight);
                             window.open("guideA_0.html", );
                         } else {
